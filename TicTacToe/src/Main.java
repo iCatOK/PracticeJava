@@ -4,13 +4,14 @@ import java.util.Scanner;
 public class Main {
 
     // 3. Определяем размеры массива и выигрышную серию
-    static int SIZE_X = 3;
-    static int SIZE_Y = 3;
-    static int WIN_SERIES = 2;
+    static int SIZE_X;
+    static int SIZE_Y;
+    static int WIN_SERIES;
     static int SIZE_D = SIZE_X;
 
     // 1. Создаем двумерный массив
     static char[][] field;
+    static int SHAPE;
 
     // 2. Обозначаем кто будет ходить какими фишками
     static final char PLAYER_DOT = 'X';
@@ -34,7 +35,9 @@ public class Main {
             WIN_SERIES = scanner.nextInt();
         } while (!(WIN_SERIES <= Math.max(SIZE_X, SIZE_Y)));
 
-        SIZE_D = Math.min(SIZE_X, SIZE_Y);
+        if(Math.min(SIZE_X,SIZE_Y)==SIZE_X) SHAPE = 1; //вертикально
+        else if(Math.min(SIZE_X,SIZE_Y)==SIZE_Y) SHAPE = 2; //горизонтальнo
+
         field = new char[SIZE_Y][SIZE_X];
 
         for(int i = 0; i < SIZE_Y; i++) {
@@ -86,6 +89,50 @@ public class Main {
         } while(!isCellValid(coords[1], coords[0]));
         setSym(coords[1], coords[0], AI_DOT);
         return coords;
+    }
+
+    private static int[] calculateStep(int shape){
+        int win_streak = 0, current_ws = 0, end_x = SIZE_X, end_y = SIZE_Y;
+        int[] coords = {0,0}, best_coords = {0,0};
+        switch (SHAPE){
+            case 1:{
+                end_y = SIZE_Y - WIN_SERIES + 1;
+            } break;
+            case 2:{
+                end_x = SIZE_X - WIN_SERIES + 1;
+            }
+        }
+        //горизонтали
+        for(int i = 0; i < SIZE_Y; i++){
+            for(int j = 0; j < SIZE_X; j++) {
+                if (field[i][j] == PLAYER_DOT)
+                    current_ws++;
+                if(field[i][j]==EMPTY_DOT)
+                    coords = new int[]{j,i};
+            }
+            if(current_ws>win_streak){
+                win_streak = current_ws;
+                best_coords = coords;
+            }
+            current_ws = 0;
+        }
+        //вертикали
+        for(int i = 0; i < SIZE_X; i++){
+            for(int j = 0; j < SIZE_Y; j++) {
+                if (field[j][i] == PLAYER_DOT)
+                    current_ws++;
+                if(field[j][i]==EMPTY_DOT)
+                    coords = new int[]{i,j};
+            }
+            if(current_ws>win_streak){
+                win_streak = current_ws;
+                best_coords = coords;
+            }
+            current_ws = 0;
+        }
+
+
+        return best_coords;
     }
 
     // 14. Проверка победы
