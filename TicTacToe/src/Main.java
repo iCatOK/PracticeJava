@@ -92,25 +92,23 @@ public class Main {
     }
 
     private static int[] calculateStep(int shape){
-        int win_streak = 0, current_ws = 0, end_x = SIZE_X, end_y = SIZE_Y;
+        boolean isStepTaken = false;
+        int win_streak = 0, current_ws = 0;
         int[] coords = {0,0}, best_coords = {0,0};
-        switch (SHAPE){
-            case 1:{
-                end_y = SIZE_Y - WIN_SERIES + 1;
-            } break;
-            case 2:{
-                end_x = SIZE_X - WIN_SERIES + 1;
-            }
-        }
+
         //горизонтали
         for(int i = 0; i < SIZE_Y; i++){
             for(int j = 0; j < SIZE_X; j++) {
+                if (field[i][j] == AI_DOT) {
+                    isStepTaken = true;
+                    break;
+                }
                 if (field[i][j] == PLAYER_DOT)
                     current_ws++;
                 if(field[i][j]==EMPTY_DOT)
                     coords = new int[]{j,i};
             }
-            if(current_ws>win_streak){
+            if(current_ws>win_streak && !isStepTaken){
                 win_streak = current_ws;
                 best_coords = coords;
             }
@@ -133,6 +131,24 @@ public class Main {
 
 
         return best_coords;
+    }
+
+    private static int[] diagonalStreakCalc(){
+        int end_x = SIZE_X, end_y = SIZE_Y;
+        int win_streak = 0, current_ws = 0;
+        int[] coords = {0,0}, best_coords = {0,0};
+
+        switch (SHAPE){
+            case 1:{
+                end_y = SIZE_Y - WIN_SERIES + 1;
+            } break;
+            case 2:{
+                end_x = SIZE_X - WIN_SERIES + 1;
+            } break;
+        }
+
+        return best_coords;
+
     }
 
     // 14. Проверка победы
