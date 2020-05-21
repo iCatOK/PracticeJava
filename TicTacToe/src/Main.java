@@ -6,11 +6,11 @@ public class Main {
     // 3. Определяем размеры массива и выигрышную серию
     static int SIZE_X = 3;
     static int SIZE_Y = 3;
-    static final int WIN_SERIES = 2;
+    static int WIN_SERIES = 2;
     static int SIZE_D = SIZE_X;
 
     // 1. Создаем двумерный массив
-    static char[][] field = new char[SIZE_Y][SIZE_X];
+    static char[][] field;
 
     // 2. Обозначаем кто будет ходить какими фишками
     static final char PLAYER_DOT = 'X';
@@ -24,11 +24,18 @@ public class Main {
 
     // 4. Заполняем на массив
     private static void initField() {
+        do {
+            System.out.println("Введите размеры поля: X Y (1-10)");
+            SIZE_X = scanner.nextInt();
+            SIZE_Y = scanner.nextInt();
+        } while (!(SIZE_X > 0 && SIZE_X < 11 && SIZE_Y > 0 && SIZE_Y < 11));
+        do {
+            System.out.println("Введите выигрышную серию: W (1-max(X,Y))");
+            WIN_SERIES = scanner.nextInt();
+        } while (!(WIN_SERIES <= Math.max(SIZE_X, SIZE_Y)));
 
-        System.out.println("Введите размеры поля: X Y (1-10)");
-        SIZE_X = scanner.nextInt();
-        SIZE_Y = scanner.nextInt();
         SIZE_D = Math.min(SIZE_X, SIZE_Y);
+        field = new char[SIZE_Y][SIZE_X];
 
         for(int i = 0; i < SIZE_Y; i++) {
             for(int j = 0; j < SIZE_X; j++) {
@@ -62,7 +69,7 @@ public class Main {
         // 11. с проверкой
         int[] coords = {0,0};
         do {
-            System.out.println("Введите координаты: X Y (1-3)");
+            System.out.println(String.format("Введите координаты: X Y (1-%d)(1-%d)", SIZE_X, SIZE_Y));
             coords[0] = scanner.nextInt() - 1;
             coords[1] = scanner.nextInt() - 1;
         } while (!isCellValid(coords[1], coords[0]));
@@ -84,46 +91,40 @@ public class Main {
     // 14. Проверка победы
     private static boolean checkWin(char sym, int[] coords) {
         //счетчики
-        int i = 0, j = 0, k = 0;
+        int i = 0, j = 0;
         //выигрыш-серии по верт,горизонт, и диагоналям
         int win_x = 0, win_y = 0, win_d1 = 0, win_d2 = 0;
-        while (i < SIZE_X || j < SIZE_Y || k < SIZE_D){
+        //расчёт выигрыша по веритикали и горизонтали
+        while (i < SIZE_X || j < SIZE_Y){
             win_x = i < SIZE_X && field[coords[1]][i] == sym ? win_x+1 : 0;
             win_y = j < SIZE_Y && field[j][coords[0]] == sym ? win_y+1 : 0;
-            win_d1 = k < SIZE_D && field[k][k] == sym ? win_d1+1 : 0;
-            win_d2 = k < SIZE_D && field[k][SIZE_D-1-k] == sym ? win_d2+1 : 0;
+            //win_d1 = k < SIZE_D && field[k][k] == sym ? win_d1+1 : 0;
+            //win_d2 = k < SIZE_D && field[k][SIZE_D-1-k] == sym ? win_d2+1 : 0;
 
-            if(win_x == WIN_SERIES || win_y == WIN_SERIES || win_d1 == WIN_SERIES || win_d2 == WIN_SERIES)
+            if(win_x == WIN_SERIES || win_y == WIN_SERIES)
                 return true;
-            i++;j++;k++;
+            i++;j++;
+        }
+        //стартовая позиция для диагоналей
+        int[] pos_d1 = {coords[0]-Math.min(coords[0],coords[1]), coords[1]-Math.min(coords[0],coords[1])};
+        int[] pos_d2 = {coords[0]+Math.min(coords[0],coords[1]), coords[1]-Math.min(coords[0],coords[1])};
+        //расчет выигрыша по главной диагонали
+        while (pos_d1[0] < SIZE_X && pos_d1[1] < SIZE_Y){
+            win_d1 = field[pos_d1[1]][pos_d1[0]] == sym ?  win_d1+1 : 0;
+            if(win_d1 == WIN_SERIES)
+                return true;
+            pos_d1[0]++;
+            pos_d1[1]++;
+        }
+        //расчет выигрыша по побочной диагонали
+        while (pos_d1[0] < SIZE_X && pos_d1[1] < SIZE_Y){
+            win_d2 = field[pos_d2[1]][pos_d2[0]] == sym ?  win_d1+1 : 0;
+            if(win_d2 == WIN_SERIES)
+                return true;
+            pos_d2[0]--;
+            pos_d2[1]++;
         }
         return false;
-
-//        if (field[0][0] == sym && field[0][1] == sym && field[0][2] == sym) {
-//            return true;
-//        }
-//        if (field[1][0] == sym && field[1][1] == sym && field[1][2] == sym) {
-//            return true;
-//        }
-//        if (field[2][0] == sym && field[2][1] == sym && field[2][2] == sym) {
-//            return true;
-//        }
-//
-//        if (field[0][0] == sym && field[1][0] == sym && field[2][0] == sym) {
-//            return true;
-//        }
-//        if (field[0][1] == sym && field[1][1] == sym && field[2][1] == sym) {
-//            return true;
-//        }
-//        if (field[0][2] == sym && field[1][2] == sym && field[2][2] == sym) {
-//            return true;
-//        }
-//
-//
-//        if (field[0][0] == sym && field[1][1] == sym && field[2][2] == sym) {
-//            return true;
-//        }
-//        return field[2][0] == sym && field[1][1] == sym && field[0][2] == sym;
     }
 
     // 16. Проверка полное ли поле? возможно ли ходить?
