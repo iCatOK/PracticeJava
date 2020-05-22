@@ -1,3 +1,5 @@
+import java.lang.management.PlatformLoggingMXBean;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -30,6 +32,9 @@ public class Main {
             SIZE_X = scanner.nextInt();
             SIZE_Y = scanner.nextInt();
         } while (!(SIZE_X > 0 && SIZE_X < 11 && SIZE_Y > 0 && SIZE_Y < 11));
+
+        SIZE_D = Math.min(SIZE_X,SIZE_Y);
+
         do {
             System.out.println("Введите выигрышную серию: W (1-max(X,Y))");
             WIN_SERIES = scanner.nextInt();
@@ -82,33 +87,34 @@ public class Main {
 
     // 13. Ход ПК
     private static int[] aiStep() {
-        int[] coords = {0,0};
-        do{
-            coords[0] = rand.nextInt(SIZE_X);
-            coords[1] = rand.nextInt(SIZE_Y);
-        } while(!isCellValid(coords[1], coords[0]));
+        //int[] coords = {0,0};
+//        do{
+//            coords[0] = rand.nextInt(SIZE_X);
+//            coords[1] = rand.nextInt(SIZE_Y);
+//        } while(!isCellValid(coords[1], coords[0]));
+        int[] coords = calculateStep();
         setSym(coords[1], coords[0], AI_DOT);
         return coords;
     }
 
-    private static int[] calculateStep(int shape){
-        boolean isStepTaken = false;
+    private static int[] calculateStep(){
+        //boolean isStepTaken = false;
         int win_streak = 0, current_ws = 0;
         int[] coords = {0,0}, best_coords = {0,0};
 
         //горизонтали
         for(int i = 0; i < SIZE_Y; i++){
             for(int j = 0; j < SIZE_X; j++) {
-                if (field[i][j] == AI_DOT) {
-                    isStepTaken = true;
-                    break;
-                }
+//                if (field[i][j] == AI_DOT) {
+//                    isStepTaken = true;
+//                    break;
+//                }
                 if (field[i][j] == PLAYER_DOT)
                     current_ws++;
                 if(field[i][j]==EMPTY_DOT)
                     coords = new int[]{j,i};
             }
-            if(current_ws>win_streak && !isStepTaken){
+            if(current_ws>win_streak){
                 win_streak = current_ws;
                 best_coords = coords;
             }
@@ -128,15 +134,23 @@ public class Main {
             }
             current_ws = 0;
         }
+        //диагонали
+        int[] diagonal_best_coords = diagonalStreakCalc();
+        if(diagonal_best_coords[2] > win_streak && diagonal_best_coords[0] > -1 && diagonal_best_coords[1] > -1) {
+            //win_streak = diagonal_best_coords[2];
+            best_coords[0] = diagonal_best_coords[0];
+            best_coords[1] = diagonal_best_coords[1];
+        }
 
 
         return best_coords;
     }
 
+    //вычисление лучшего диагонального хода
     private static int[] diagonalStreakCalc(){
         int end_x = SIZE_X, end_y = SIZE_Y;
-        int win_streak = 0, current_ws = 0;
-        int[] coords = {0,0}, best_coords = {0,0};
+        int current_ws_d1 = 0, current_ws_d2 = 0;
+        int[] coords_d1 = {-1,-1}, best_coords = {0,-1,-1}, coords_d2 = {-1,-1};
 
         switch (SHAPE){
             case 1:{
@@ -145,6 +159,65 @@ public class Main {
             case 2:{
                 end_x = SIZE_X - WIN_SERIES + 1;
             } break;
+        }
+
+        //диагонали со сдвигом вправо-влево
+        for(int i = 0; i <end_x; i++){
+            for(int j = 0; j < SIZE_D; j++){
+                try{
+                    if(field[j][j+i] == PLAYER_DOT)
+                        current_ws_d1++;
+                    if(field[j][j+i]==EMPTY_DOT)
+                        coords_d1 = new int[]{j,i};
+                    if(field[j][SIZE_X-1-j-i] == PLAYER_DOT)
+                        current_ws_d2++;
+                    if(field[j][SIZE_X-1-j-i]==EMPTY_DOT)
+                        coords_d2 = new int[]{j,i};
+                } catch (ArrayIndexOutOfBoundsException e){
+                    break;
+                }
+            }
+            if(current_ws_d1 < current_ws_d2 && !Arrays.equals(coords_d2, new int[]{-1, -1})) {
+                current_ws_d1 = current_ws_d2;
+                coords_d1 = coords_d2;
+            }
+            if(best_coords[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
+                best_coords[2] = current_ws_d1;
+                best_coords[0] = coords_d1[0];
+                best_coords[1] = coords_d1[1];
+            }
+            current_ws_d1 = 0;
+            current_ws_d2 = 0;
+            coords_d1 = new int[]{-1,-1}; coords_d2 = new int[]{-1,-1};
+        }
+        //диагонали со сдвигом вверх-вниз
+        for(int i = 1; i < end_y; i++){
+            for(int j = 0; j < SIZE_D; j++){
+                try{
+                    if(field[i+j][j] == PLAYER_DOT)
+                        current_ws_d1++;
+                    if(field[i+j][j]==EMPTY_DOT)
+                        coords_d1 = new int[]{j,i};
+                    if(field[i+j][SIZE_X-1-j] == PLAYER_DOT)
+                        current_ws_d2++;
+                    if(field[i+j][SIZE_X-1-j]==EMPTY_DOT)
+                        coords_d2 = new int[]{j,i};
+                } catch (ArrayIndexOutOfBoundsException e){
+                    break;
+                }
+                if(current_ws_d1 < current_ws_d2 && !Arrays.equals(coords_d2, new int[]{-1, -1})) {
+                    current_ws_d1 = current_ws_d2;
+                    coords_d1 = coords_d2;
+                }
+                if(best_coords[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
+                    best_coords[2] = current_ws_d1;
+                    best_coords[0] = coords_d1[0];
+                    best_coords[1] = coords_d1[1];
+                }
+                current_ws_d1 = 0;
+                current_ws_d2 = 0;
+                coords_d1 = new int[]{-1,-1}; coords_d2 = new int[]{-1,-1};
+            }
         }
 
         return best_coords;
