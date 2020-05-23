@@ -253,8 +253,8 @@ public class Main {
             pos_d1[1]++;
         }
         //расчет выигрыша по побочной диагонали
-        while (pos_d1[0] < SIZE_X && pos_d1[1] < SIZE_Y){
-            win_d2 = field[pos_d2[1]][pos_d2[0]] == sym ?  win_d1+1 : 0;
+        while (pos_d2[0] < SIZE_X && pos_d2[1] < SIZE_Y){
+            win_d2 = field[pos_d2[1]][pos_d2[0]] == sym ?  win_d2+1 : 0;
             if(win_d2 == WIN_SERIES)
                 return true;
             pos_d2[0]--;
