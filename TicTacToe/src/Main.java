@@ -243,7 +243,8 @@ public class Main {
         }
         //стартовая позиция для диагоналей
         int[] pos_d1 = {coords[0]-Math.min(coords[0],coords[1]), coords[1]-Math.min(coords[0],coords[1])};
-        int[] pos_d2 = {coords[0]+Math.min(coords[0],coords[1]), coords[1]-Math.min(coords[0],coords[1])};
+        int offset = Math.min(SIZE_X - coords[0] - 1, coords[1]);
+        int[] pos_d2 = {coords[0]+offset, coords[1]-offset};
         //расчет выигрыша по главной диагонали
         while (pos_d1[0] < SIZE_X && pos_d1[1] < SIZE_Y){
             win_d1 = field[pos_d1[1]][pos_d1[0]] == sym ?  win_d1+1 : 0;
@@ -253,7 +254,7 @@ public class Main {
             pos_d1[1]++;
         }
         //расчет выигрыша по побочной диагонали
-        while (pos_d2[0] < SIZE_X && pos_d2[1] < SIZE_Y){
+        while (pos_d2[0] > -1 && pos_d2[1] < SIZE_Y){
             win_d2 = field[pos_d2[1]][pos_d2[0]] == sym ?  win_d2+1 : 0;
             if(win_d2 == WIN_SERIES)
                 return true;
