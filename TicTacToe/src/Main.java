@@ -168,11 +168,11 @@ public class Main {
                     if(field[j][j+i] == PLAYER_DOT)
                         current_ws_d1++;
                     if(field[j][j+i]==EMPTY_DOT)
-                        coords_d1 = new int[]{j,i};
+                        coords_d1 = new int[]{j+i,j};
                     if(field[j][SIZE_X-1-j-i] == PLAYER_DOT)
                         current_ws_d2++;
                     if(field[j][SIZE_X-1-j-i]==EMPTY_DOT)
-                        coords_d2 = new int[]{j,i};
+                        coords_d2 = new int[]{SIZE_X-1-j-i,j};
                 } catch (ArrayIndexOutOfBoundsException e){
                     break;
                 }
