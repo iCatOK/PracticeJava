@@ -101,28 +101,38 @@ public class Main {
     private static int[] calculateStep(){
         boolean isStepTaken = false;
         boolean isPlayerStep = false;
+        boolean beforeTaken = false;
         int win_streak = 0, current_ws = 0;
-        int[] coords = {0,0}, best_coords = {0,0};
+        int[] coords = {-1,-1}, best_coords = {-1,-1}, coords_before = coords;
 
         //горизонтали
         for(int i = 0; i < SIZE_Y; i++){
             for(int j = 0; j < SIZE_X; j++) {
-//                if (field[i][j] == AI_DOT) {
-//                    isStepTaken = true;
-//                    break;
-//                }
-                if (field[i][j] == PLAYER_DOT) {
-                    isPlayerStep = true;
-                    current_ws++;
-                }
-                else if(field[i][j]==EMPTY_DOT && !isStepTaken) {
-                    coords = new int[]{j, i};
-                    if(isPlayerStep)
-                        isStepTaken = true;
-                    isPlayerStep = false;
-                } else {
-                    isPlayerStep = false;
-                }
+               try {
+                   if (field[i][j] == PLAYER_DOT) {
+                       isPlayerStep = true;
+                       current_ws++;
+                   }
+                   else if(field[i][j]==EMPTY_DOT && !isStepTaken) {
+                       coords = new int[]{j, i};
+                       if (isPlayerStep)
+                           isStepTaken = true;
+                       else {
+                           coords_before = coords;
+                           beforeTaken = true;
+                       }
+                       isPlayerStep = false;
+                   }
+                   if(field[i][j]==AI_DOT) {
+                       isPlayerStep = false;
+                       if(beforeTaken) {
+                           coords = coords_before;
+                           isStepTaken = true;
+                       }
+                   }
+               } catch (IndexOutOfBoundsException e){
+                   break;
+               }
 
             }
             if(current_ws>win_streak){
@@ -132,22 +142,38 @@ public class Main {
             current_ws = 0;
             isStepTaken = false;
             isPlayerStep = false;
+            beforeTaken = false;
+            coords = new int[]{-1,-1};
+            coords_before = coords;
         }
         //вертикали
         for(int i = 0; i < SIZE_X; i++){
             for(int j = 0; j < SIZE_Y; j++) {
-                if (field[j][i] == PLAYER_DOT) {
-                    current_ws++;
-                    isPlayerStep = true;
-                }
-                else if(field[j][i]==EMPTY_DOT && !isStepTaken) {
-                    coords = new int[]{i, j};
-                    if(isPlayerStep)
-                        isStepTaken = true;
-                    isPlayerStep = false;
-                }
-                else{
-                    isPlayerStep = false;
+                try{
+                    if (field[j][i] == PLAYER_DOT) {
+                        current_ws++;
+                        isPlayerStep = true;
+                    }
+                    else if(field[j][i]==EMPTY_DOT && !isStepTaken) {
+                        coords = new int[]{i, j};
+                        if(isPlayerStep)
+                            isStepTaken = true;
+                        else {
+                            coords_before = coords;
+                            beforeTaken = true;
+                        }
+                        isPlayerStep = false;
+                    }
+
+                    if(field[j][i]==AI_DOT){
+                        isPlayerStep = false;
+                        if(beforeTaken){
+                            coords = coords_before;
+                            isStepTaken = true;
+                        }
+                    }
+                } catch (IndexOutOfBoundsException e){
+                    break;
                 }
             }
             if(current_ws>win_streak){
@@ -157,6 +183,9 @@ public class Main {
             current_ws = 0;
             isStepTaken = false;
             isPlayerStep = false;
+            beforeTaken = false;
+            coords = new int[]{-1,-1};
+            coords_before = coords;
         }
         //диагонали
         int[] diagonal_best_coords = diagonalStreakCalc();
@@ -181,8 +210,8 @@ public class Main {
         int end_x = SIZE_X, end_y = SIZE_Y;
         int current_ws_d1 = 0, current_ws_d2 = 0;
         int[] coords_d1 = {-1,-1}, coords_d2 = {-1,-1},
-                best_coords_left_right = {0,-1,-1},
-                best_coords_up_down = {0,-1,-1};
+                best_coords_left_right = {-1,-1,0},
+                best_coords_up_down = {-1,-1,0};
         int[] coords_d1_before = coords_d1, coords_d2_before = coords_d2;
 
         switch (SHAPE){
@@ -340,8 +369,6 @@ public class Main {
         while (i < SIZE_X || j < SIZE_Y){
             win_x = i < SIZE_X && field[coords[1]][i] == sym ? win_x+1 : 0;
             win_y = j < SIZE_Y && field[j][coords[0]] == sym ? win_y+1 : 0;
-            //win_d1 = k < SIZE_D && field[k][k] == sym ? win_d1+1 : 0;
-            //win_d2 = k < SIZE_D && field[k][SIZE_D-1-k] == sym ? win_d2+1 : 0;
 
             if(win_x == WIN_SERIES || win_y == WIN_SERIES)
                 return true;
