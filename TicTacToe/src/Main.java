@@ -40,7 +40,8 @@ public class Main {
             WIN_SERIES = scanner.nextInt();
         } while (!(WIN_SERIES <= Math.max(SIZE_X, SIZE_Y)));
 
-        if(Math.min(SIZE_X,SIZE_Y)==SIZE_X) SHAPE = 1; //вертикально
+        if(SIZE_Y==SIZE_X) SHAPE = 0;
+        else if(Math.min(SIZE_X,SIZE_Y)==SIZE_X) SHAPE = 1;//вертикально
         else if(Math.min(SIZE_X,SIZE_Y)==SIZE_Y) SHAPE = 2; //горизонтальнo
 
         field = new char[SIZE_Y][SIZE_X];
@@ -179,7 +180,10 @@ public class Main {
 
         int end_x = SIZE_X, end_y = SIZE_Y;
         int current_ws_d1 = 0, current_ws_d2 = 0;
-        int[] coords_d1 = {-1,-1}, best_coords = {0,-1,-1}, coords_d2 = {-1,-1};
+        int[] coords_d1 = {-1,-1}, coords_d2 = {-1,-1},
+                best_coords_left_right = {0,-1,-1},
+                best_coords_up_down = {0,-1,-1};
+        int[] coords_d1_before = coords_d1, coords_d2_before = coords_d2;
 
         switch (SHAPE){
             case 1:{
@@ -188,6 +192,69 @@ public class Main {
             case 2:{
                 end_x = SIZE_X - WIN_SERIES + 1;
             } break;
+        }
+
+        for(int i = 1; i < end_y; i++){
+            for(int j = 0; j < SIZE_D; j++){
+                try{
+                    if(field[i+j][j] == PLAYER_DOT) {
+                        current_ws_d1++;
+                        isPlayerStepD1 = true;
+                    }
+                    else if(field[i+j][j]==EMPTY_DOT && !isStepTakenD1) {
+                        coords_d1 = new int[]{j, j+i};
+                        if(isPlayerStepD1)
+                            isStepTakenD1 = true;
+                        else
+                            coords_d1_before = coords_d1;
+                        isPlayerStepD1 = false;
+                    }
+                    if(field[i+j][j]==AI_DOT){
+                        isPlayerStepD1 = false;
+                        coords_d1 = coords_d1_before;
+                        isStepTakenD1 = true;
+                    }
+                    //----------------------------------------------------
+                    if(field[i+j][SIZE_X-1-j] == PLAYER_DOT) {
+                        current_ws_d2++;
+                        isPlayerStepD2 = true;
+                    }
+                    else if(field[i+j][SIZE_X-1-j]==EMPTY_DOT && !isStepTakenD2) {
+                        coords_d2 = new int[]{SIZE_X-1-j, i+j};
+                        if(isPlayerStepD2)
+                            isStepTakenD2 = true;
+                        else
+                            coords_d2_before = coords_d2;
+                        isPlayerStepD2 = false;
+                    }
+                    if(field[i+j][SIZE_X-1-j]==AI_DOT){
+                        isPlayerStepD2 = false;
+                        coords_d2 = coords_d2_before;
+                        isStepTakenD2 = true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e){
+                    break;
+                }
+            }
+            if(current_ws_d1 < current_ws_d2 && !Arrays.equals(coords_d2, new int[]{-1, -1})) {
+                current_ws_d1 = current_ws_d2;
+                coords_d1 = coords_d2;
+            }
+            if(best_coords_up_down[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
+                best_coords_up_down[2] = current_ws_d1;
+                best_coords_up_down[0] = coords_d1[0];
+                best_coords_up_down[1] = coords_d1[1];
+            }
+            current_ws_d1 = 0;
+            current_ws_d2 = 0;
+
+            isStepTakenD1 = false;
+            isPlayerStepD1 = false;
+
+            isStepTakenD2 = false;
+            isPlayerStepD2 = false;
+
+            coords_d1 = new int[]{-1,-1}; coords_d2 = new int[]{-1,-1};
         }
 
         //диагонали со сдвигом вправо-влево
@@ -202,11 +269,16 @@ public class Main {
                         coords_d1 = new int[]{j + i, j};
                         if(isPlayerStepD1)
                             isStepTakenD1 = true;
-                        isPlayerStepD1 = false;
-                    } else {
+                        else
+                            coords_d1_before = coords_d1;
                         isPlayerStepD1 = false;
                     }
-
+                    if(field[j][j+i]==AI_DOT){
+                        isPlayerStepD1 = false;
+                        coords_d1 = coords_d1_before;
+                        isStepTakenD1 = true;
+                    }
+                    //-------------------------------------------
                     if(field[j][SIZE_X-1-j-i] == PLAYER_DOT) {
                         current_ws_d2++;
                         isPlayerStepD2 = true;
@@ -215,10 +287,16 @@ public class Main {
                         coords_d2 = new int[]{SIZE_X - 1 - j - i, j};
                         if(isPlayerStepD2)
                             isStepTakenD2 = true;
-                        isPlayerStepD2 = false;
-                    } else {
+                        else
+                            coords_d2_before = coords_d2;
                         isPlayerStepD2 = false;
                     }
+                    if(field[j][SIZE_X-1-j-i]==AI_DOT){
+                        isPlayerStepD2 = false;
+                        coords_d2 = coords_d2_before;
+                        isStepTakenD2 = true;
+                    }
+
                 } catch (ArrayIndexOutOfBoundsException e){
                     break;
                 }
@@ -227,10 +305,10 @@ public class Main {
                 current_ws_d1 = current_ws_d2;
                 coords_d1 = coords_d2;
             }
-            if(best_coords[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
-                best_coords[2] = current_ws_d1;
-                best_coords[0] = coords_d1[0];
-                best_coords[1] = coords_d1[1];
+            if(best_coords_left_right[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
+                best_coords_left_right[2] = current_ws_d1;
+                best_coords_left_right[0] = coords_d1[0];
+                best_coords_left_right[1] = coords_d1[1];
             }
             current_ws_d1 = 0;
             current_ws_d2 = 0;
@@ -242,64 +320,13 @@ public class Main {
             isPlayerStepD2 = false;
 
             coords_d1 = new int[]{-1,-1}; coords_d2 = new int[]{-1,-1};
+            coords_d1_before = coords_d1; coords_d2_before = coords_d2;
         }
+
         //диагонали со сдвигом вверх-вниз
-        for(int i = 1; i < end_y; i++){
-            for(int j = 0; j < SIZE_D; j++){
-                try{
-                    if(field[i+j][j] == PLAYER_DOT) {
-                        current_ws_d1++;
-                        isPlayerStepD1 = true;
-                    }
-                    else if(field[i+j][j]==EMPTY_DOT && !isStepTakenD1) {
-                        coords_d1 = new int[]{j, i};
-                        if(isPlayerStepD1)
-                            isStepTakenD1 = true;
-                        isPlayerStepD1 = false;
-                    }
-                    else {
-                        isPlayerStepD1 = false;
-                    }
 
-                    if(field[i+j][SIZE_X-1-j] == PLAYER_DOT) {
-                        current_ws_d2++;
-                        isPlayerStepD2 = true;
-                    }
-                    else if(field[i+j][SIZE_X-1-j]==EMPTY_DOT && !isStepTakenD2) {
-                        coords_d2 = new int[]{j, i};
-                        if(isPlayerStepD2)
-                            isStepTakenD2 = true;
-                        isPlayerStepD2 = false;
-                    } else {
-                        isPlayerStepD2 = false;
-                    }
-                } catch (ArrayIndexOutOfBoundsException e){
-                    break;
-                }
-                if(current_ws_d1 < current_ws_d2 && !Arrays.equals(coords_d2, new int[]{-1, -1})) {
-                    current_ws_d1 = current_ws_d2;
-                    coords_d1 = coords_d2;
-                }
-                if(best_coords[2] < current_ws_d1 && !Arrays.equals(coords_d1, new int[]{-1, -1})){
-                    best_coords[2] = current_ws_d1;
-                    best_coords[0] = coords_d1[0];
-                    best_coords[1] = coords_d1[1];
-                }
-                current_ws_d1 = 0;
-                current_ws_d2 = 0;
 
-                isStepTakenD1 = false;
-                isPlayerStepD1 = false;
-
-                isStepTakenD2 = false;
-                isPlayerStepD2 = false;
-
-                coords_d1 = new int[]{-1,-1}; coords_d2 = new int[]{-1,-1};
-
-            }
-        }
-
-        return best_coords;
+        return best_coords_left_right[2] > best_coords_up_down[2] ? best_coords_left_right : best_coords_up_down;
 
     }
 
