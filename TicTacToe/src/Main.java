@@ -353,8 +353,6 @@ public class Main {
         }
 
         //диагонали со сдвигом вверх-вниз
-
-
         return best_coords_left_right[2] > best_coords_up_down[2] ? best_coords_left_right : best_coords_up_down;
 
     }
