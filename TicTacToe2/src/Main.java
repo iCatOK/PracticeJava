@@ -1,16 +1,19 @@
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
 
     // 3. Определяем размеры массива
-    static final int SIZE_X = 3;
-    static final int SIZE_Y = 3;
-    static int WIN_SERIES;
-    static int SIZE_D = SIZE_X;
+    static final int MAX_FIELD_SIZE = 10;
+    static final int MIN_FIELD_SIZE = 3;
+
+    static int SIZE_X = 3;
+    static int SIZE_Y = 3;
+    static int WIN_SERIES = 3;
 
     // 1. Создаем двумерный массив
-    static char[][] field = new char[SIZE_Y][SIZE_X];
+    static char[][] field;
 
     // 2. Обозначаем кто будет ходить какими фишками
     static final char PLAYER_DOT = 'X';
@@ -21,6 +24,34 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     // 12. Создаем рандом
     static final Random rand = new Random();
+    //невалидные координаты
+    static final int[] invalidCoordinates = new int[]{-1, -1};
+
+
+    private static boolean isSizeInvalid(int sizeX, int sizeY) {
+        return sizeX < MIN_FIELD_SIZE ||
+                sizeX > MAX_FIELD_SIZE ||
+                sizeY < MIN_FIELD_SIZE ||
+                sizeY > MAX_FIELD_SIZE;
+    }
+
+    //вводим параметры поля
+    private static void setFieldSize() {
+        do {
+            System.out.println("Размеры поля X Y (3-10):");
+            SIZE_X = scanner.nextInt();
+            SIZE_Y = scanner.nextInt();
+        } while (isSizeInvalid(SIZE_X, SIZE_Y));
+
+        field = new char[SIZE_Y][SIZE_X];
+    }
+
+    private static void setWinStreak() {
+        do {
+            System.out.println(String.format("Выигрышная серия(2-%d):", Math.max(SIZE_X, SIZE_Y)));
+            WIN_SERIES = scanner.nextInt();
+        } while (WIN_SERIES > Math.max(SIZE_X, SIZE_Y) || WIN_SERIES < 2);
+    }
 
     // 4. Заполняем на массив
     private static void initField() {
@@ -57,7 +88,7 @@ public class Main {
         int x;
         int y;
         do {
-            System.out.println("Введите координаты: X Y (1-3)");
+            System.out.println(String.format("Введите координаты: X Y (1-%d)(1-%d)", SIZE_X, SIZE_Y));
             x = scanner.nextInt() - 1;
             y = scanner.nextInt() - 1;
         } while (isCellNotValid(y, x));
@@ -67,7 +98,7 @@ public class Main {
     }
 
     // 13. Ход ПК
-    private static int[] aiStep() {
+    private static int[] aiStepRandom() {
         int x;
         int y;
         do {
@@ -76,6 +107,41 @@ public class Main {
         } while (isCellNotValid(y, x));
         setSym(y, x, AI_DOT);
         return new int[]{x, y};
+    }
+
+    private static int[] isStepCanWin(char sym) {
+        int[] winCoordinates = invalidCoordinates;
+        for (int y = 0; y < SIZE_Y; y++) {
+            for (int x = 0; x < SIZE_X; x++) {
+                if (field[y][x] == EMPTY_DOT) {
+                    field[y][x] = sym;
+                    boolean isStepWin = isWin(sym, x, y);
+                    field[y][x] = EMPTY_DOT;
+                    if (isStepWin) {
+                        winCoordinates = new int[]{x, y};
+                        return winCoordinates;
+                    }
+                }
+            }
+        }
+
+        return winCoordinates;
+    }
+
+    private static void aiStepByStrategy() {
+        //winCoordinates - попытка выиграть за один ход на координатах {x, y}
+        int[] winCoordinates = isStepCanWin(AI_DOT);
+
+        if (Arrays.equals(winCoordinates, invalidCoordinates))
+            winCoordinates = isStepCanWin(PLAYER_DOT);
+        if (Arrays.equals(winCoordinates, invalidCoordinates)) {
+            aiStepRandom();
+            return;
+        }
+
+        int x = winCoordinates[0];
+        int y = winCoordinates[1];
+        setSym(y, x, AI_DOT);
     }
 
     private static boolean isWinHorizontal(char sym, int y) {
@@ -134,7 +200,7 @@ public class Main {
 
 
     // 14. Проверка победы
-    private static boolean checkWin(char sym, int x, int y) {
+    private static boolean isWin(char sym, int x, int y) {
         return isWinHorizontal(sym, y) ||
                 isWinVertical(sym, x) ||
                 isWinMainDiagonal(sym, x, y) ||
@@ -165,6 +231,10 @@ public class Main {
 
     public static void main(String[] args) {
         // 1 - 1 иницируем и выводим на печать
+        System.out.println("Добро пожаловать в крестики-нолики!\nВведите настройки игры:");
+        setFieldSize();
+        setWinStreak();
+
         initField();
         printField();
         // 1 - 1 иницируем и выводим на печать
@@ -176,7 +246,7 @@ public class Main {
             int x = coordinates[0];
             int y = coordinates[1];
             printField();
-            if (checkWin(PLAYER_DOT, x, y)) {
+            if (isWin(PLAYER_DOT, x, y)) {
                 System.out.println("Player WIN!");
                 break;
             }
@@ -185,11 +255,11 @@ public class Main {
                 break;
             }
 
-            coordinates = aiStep();
+            aiStepByStrategy();
             x = coordinates[0];
             y = coordinates[1];
             printField();
-            if (checkWin(AI_DOT, x, y)) {
+            if (isWin(AI_DOT, x, y)) {
                 System.out.println("Win SkyNet!");
                 break;
             }
@@ -200,4 +270,6 @@ public class Main {
         }
 
     }
+
+
 }
