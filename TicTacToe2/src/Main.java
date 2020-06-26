@@ -7,6 +7,7 @@ public class Main {
     // 3. Определяем размеры массива
     static final int MAX_FIELD_SIZE = 10;
     static final int MIN_FIELD_SIZE = 3;
+    static final int MIN_WIN_STREAK = 2;
 
     static int SIZE_X = 3;
     static int SIZE_Y = 3;
@@ -27,7 +28,7 @@ public class Main {
     //невалидные координаты
     static final int[] invalidCoordinates = new int[]{-1, -1};
 
-
+    //проверка размера поля на выход за границы
     private static boolean isSizeInvalid(int sizeX, int sizeY) {
         return sizeX < MIN_FIELD_SIZE ||
                 sizeX > MAX_FIELD_SIZE ||
@@ -46,11 +47,12 @@ public class Main {
         field = new char[SIZE_Y][SIZE_X];
     }
 
+    //вводим выигрышную серию
     private static void setWinStreak() {
         do {
             System.out.println(String.format("Выигрышная серия(2-%d):", Math.max(SIZE_X, SIZE_Y)));
             WIN_SERIES = scanner.nextInt();
-        } while (WIN_SERIES > Math.max(SIZE_X, SIZE_Y) || WIN_SERIES < 2);
+        } while (WIN_SERIES > Math.max(SIZE_X, SIZE_Y) || WIN_SERIES < MIN_WIN_STREAK);
     }
 
     // 4. Заполняем на массив
@@ -109,6 +111,7 @@ public class Main {
         return new int[]{x, y};
     }
 
+    //проверка хода на выигрыш
     private static int[] isStepCanWin(char sym) {
         int[] winCoordinates = invalidCoordinates;
         for (int y = 0; y < SIZE_Y; y++) {
@@ -128,22 +131,25 @@ public class Main {
         return winCoordinates;
     }
 
-    private static void aiStepByStrategy() {
+    //ход компьютера - по стратегии
+    private static int[] aiStepByStrategy() {
         //winCoordinates - попытка выиграть за один ход на координатах {x, y}
         int[] winCoordinates = isStepCanWin(AI_DOT);
 
         if (Arrays.equals(winCoordinates, invalidCoordinates))
             winCoordinates = isStepCanWin(PLAYER_DOT);
         if (Arrays.equals(winCoordinates, invalidCoordinates)) {
-            aiStepRandom();
-            return;
+            winCoordinates = aiStepRandom();
+            return winCoordinates;
         }
 
         int x = winCoordinates[0];
         int y = winCoordinates[1];
         setSym(y, x, AI_DOT);
+        return winCoordinates;
     }
 
+    //выигрыш по горизонтали
     private static boolean isWinHorizontal(char sym, int y) {
         int winStreak = 0;
         for (int i = 0; i < SIZE_X; i++) {
@@ -154,6 +160,7 @@ public class Main {
         return false;
     }
 
+    //выигрыш по вертикали
     private static boolean isWinVertical(char sym, int x) {
         int winStreak = 0;
         for (int i = 0; i < SIZE_Y; i++) {
@@ -164,8 +171,9 @@ public class Main {
         return false;
     }
 
+    //выигрыш по главной диагонали
     private static boolean isWinMainDiagonal(char sym, int x, int y) {
-        int offset = Math.min(x, y);
+        int offset = Math.min(x, y); //смещение для нахождения стартовой позиции главной диагонали
         int startPositionX = x - offset;
         int startPositionY = y - offset;
         int winStreak = 0;
@@ -181,6 +189,7 @@ public class Main {
         return false;
     }
 
+    //выигрыш по побочной диагонали
     private static boolean isWinSecondaryDiagonal(char sym, int x, int y) {
         int offset = Math.min(SIZE_X - x - 1, y); //смещение для нахождения стартовой позиции побочной диагонали
         int startPositionX = x + offset;
@@ -255,7 +264,7 @@ public class Main {
                 break;
             }
 
-            aiStepByStrategy();
+            coordinates = aiStepByStrategy();
             x = coordinates[0];
             y = coordinates[1];
             printField();
@@ -270,6 +279,4 @@ public class Main {
         }
 
     }
-
-
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="39f5e99d-0004-424d-b3fd-a1b53468a3cd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookLibrary.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/study/booklibrary/controller/BookController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/study/booklibrary/controller/DefaultController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/study/booklibrary/domain/Book.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/study/booklibrary/repository/BookRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/study/booklibrary/service/Storage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TicTacToe2/out/production/TicTacToe2/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../TicTacToe2/out/production/TicTacToe2/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TicTacToe2/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../TicTacToe2/src/Main.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1dnUjFW99GtM39dG3ZACOLChnt3" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="BookLibraryApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.study.booklibrary.BookLibraryApplication" />
+      <module name="Booklibrary" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.study.booklibrary.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.BookLibraryApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="39f5e99d-0004-424d-b3fd-a1b53468a3cd" name="Default Changelist" comment="" />
+      <created>1593060483942</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593060483942</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="514" y="63" key="#com.intellij.ide.util.MemberChooser" timestamp="1593078035744">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state x="514" y="63" key="#com.intellij.ide.util.MemberChooser/0.0.1418.759@0.0.1418.759" timestamp="1593078035744" />
+    <state x="463" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1593060656768">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state x="463" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1418.759@0.0.1418.759" timestamp="1593060656768" />
+    <state width="1374" height="188" key="GridCell.Tab.0.bottom" timestamp="1593099861973">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="188" key="GridCell.Tab.0.bottom/0.0.1418.759@0.0.1418.759" timestamp="1593099861973" />
+    <state width="1374" height="188" key="GridCell.Tab.0.center" timestamp="1593099861973">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="188" key="GridCell.Tab.0.center/0.0.1418.759@0.0.1418.759" timestamp="1593099861973" />
+    <state width="1374" height="188" key="GridCell.Tab.0.left" timestamp="1593099861973">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="188" key="GridCell.Tab.0.left/0.0.1418.759@0.0.1418.759" timestamp="1593099861973" />
+    <state width="1374" height="188" key="GridCell.Tab.0.right" timestamp="1593099861973">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="188" key="GridCell.Tab.0.right/0.0.1418.759@0.0.1418.759" timestamp="1593099861973" />
+    <state width="1374" height="234" key="GridCell.Tab.1.bottom" timestamp="1593095934310">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="234" key="GridCell.Tab.1.bottom/0.0.1418.759@0.0.1418.759" timestamp="1593095934310" />
+    <state width="1374" height="234" key="GridCell.Tab.1.center" timestamp="1593095934309">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="234" key="GridCell.Tab.1.center/0.0.1418.759@0.0.1418.759" timestamp="1593095934309" />
+    <state width="1374" height="234" key="GridCell.Tab.1.left" timestamp="1593095934309">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="234" key="GridCell.Tab.1.left/0.0.1418.759@0.0.1418.759" timestamp="1593095934309" />
+    <state width="1374" height="234" key="GridCell.Tab.1.right" timestamp="1593095934310">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state width="1374" height="234" key="GridCell.Tab.1.right/0.0.1418.759@0.0.1418.759" timestamp="1593095934310" />
+    <state x="396" y="203" key="com.intellij.ide.util.TipDialog" timestamp="1593139141091">
+      <screen x="0" y="0" width="1418" height="759" />
+    </state>
+    <state x="396" y="203" key="com.intellij.ide.util.TipDialog/0.0.1418.759@0.0.1418.759" timestamp="1593139141091" />
+  </component>
+</project>
